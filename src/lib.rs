@@ -41,7 +41,7 @@ pub fn compile(arguments: Vec<String>) {
                 if line_has_code(&lines[current_index]) {
                     match compiler::run(lines[current_index].as_str(), &labels, &current_index) {
                         Ok(_instruction) => {
-                            println!("{:?}", _instruction);
+                            println!("{:?}:{:?}", current_index+1, _instruction);
                             executable.push(_instruction)},
                         Err(_) => (),
                     }
@@ -50,9 +50,6 @@ pub fn compile(arguments: Vec<String>) {
             }
 
             println!("Done compiling!\nWriting to output...");
-            for v in executable.clone() {
-                println!("{:?}", v);
-            }
             match fs::OpenOptions::new()
                 .write(true)
                 .create(true)

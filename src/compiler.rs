@@ -35,7 +35,8 @@ const THIRD: Argument = [true, false];
 const FOURTH: Argument = [true, true];
 
 enum OperationType {
-    Argument,
+    TwoArguments,
+    OneArgument,
     Branch,
     Jump,
 }
@@ -61,12 +62,22 @@ pub fn run(expression: &str, labels: &HashMap<String, usize>, current_index: &us
     };
 
     match operation_type {
-        OperationType::Argument => {
+        OperationType::OneArgument => {
+            match get_registry(components[2]) {
+                Ok(_registry) => instruction.extend_from_slice(&_registry),
+                Err(_) => return Err(3),
+            }
+            match get_one_argument(components[3]) {
+                Ok(_argument) => instruction.extend_from_slice(&_argument),
+                Err(_) => return Err(4)
+            }
+        }
+        OperationType::TwoArguments => {
             match get_registry(components[2]) {
                 Ok(_registry) => instruction.extend_from_slice(&_registry),
                 Err(_) => return Err(3),
             };
-            match get_arguments(components[3], components[4]) {
+            match get_two_arguments(components[3], components[4]) {
                 Ok(_argument) => instruction.extend_from_slice(&_argument),
                 Err(_) => return Err(4),
             };
@@ -140,10 +151,10 @@ fn get_prefix(instruction: &str) -> Result<(Prefix, bool), usize> {
 
 fn get_operation_and_type(instruction: &str) -> Result<(Operation, OperationType), usize> {
     match instruction {
-        " INCREMENT" => Ok((INCREMENT, OperationType::Argument)),
-        " TO" => Ok((TO, OperationType::Argument)),
-        " ACCESS" => Ok((ACCESS, OperationType::Argument)),
-        " REPEAT THESE INSTRUCTIONS AN AMOUNT OF TIME EQUAL TO" => Ok((REPEAT, OperationType::Argument)),
+        " INCREMENT" => Ok((INCREMENT, OperationType::TwoArguments)),
+        " TO" => Ok((TO, OperationType::OneArgument)),
+        " ACCESS" => Ok((ACCESS, OperationType::TwoArguments)),
+        " REPEAT THESE INSTRUCTIONS AN AMOUNT OF TIMES EQUAL TO" => Ok((REPEAT, OperationType::TwoArguments)),
         " IF THE SPECIFIED REGISTRY IS GREATER THAN THE UNSPECIFIED REGISTRY THEN JUMP TO THE SPECIFIED LABEL" => Ok((BRANCH_IF_GREATER, OperationType::Branch)),
         " IF THE SPECIFIED REGISTRY IS EQUAL TO ZERO JUMP TO THE SPECIFIED LABEL" => Ok((BRANCH_IF_ZERO, OperationType::Branch)),
         " IF THE REGISTRIES ARE EQUAL THEN JUMP TO" => Ok((JUMP_IF_EQUAL, OperationType::Jump)),
@@ -161,25 +172,31 @@ fn get_registry(instruction: &str) -> Result<Registry, usize> {
     }
 }
 
-fn get_arguments(first_argument: &str, second_argument: &str) -> Result<Argument, usize> {
+fn get_one_argument(argument: &str) -> Result<Argument, usize> {
+    match argument {
+        " DOUBLE THE VALUE" => Ok(ONE),
+        " HALVE THE VALUE" => Ok(TWO),
+        " PUSH THE VALUE" => Ok(THIRD),
+        " POP THE VALUE" => Ok(FOURTH),
+        _ => return Err(4)
+    }
+}
+
+fn get_two_arguments(first_argument: &str, second_argument: &str) -> Result<Argument, usize> {
     let first = match first_argument {
         " POSITIVELY" 
-        | " DOUBLE THE VALUE" 
         | " INPUTTING A VALUE" 
         | " STARTING HERE" => false,
         " NEGATIVELY" 
-        | " HALVE THE VALUE" 
         | " OUTPUTTING A VALUE" 
         | " ENDING HERE" => true,
         _ => return Err(4),
     };
     let second = match second_argument {
         " USING ONE" 
-        | " PUSH THE VALUE" 
         | " AS AN INTEGER" 
         | " AND THIS IS THE FIRST LOOP" => false,
         " USING THE OTHER REGISTRY"
-        | " POP THE VALUE"
         | " AS A CHARACTER"
         | " AND THIS IS THE SECOND LOOP" => true,
         _ => return Err(4),
