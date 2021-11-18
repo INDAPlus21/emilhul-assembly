@@ -226,7 +226,7 @@ fn get_label(lenght: u32, instruction: &str, labels: &HashMap<String, usize>, cu
                     return Err(5)
                 };
             if (abs_diff) <= 2usize.pow(lenght) {
-                return Ok(abs_diff as u8);
+                return Ok((abs_diff - 1) as u8);
             } else {
                 return Err(5)
             }      
@@ -246,7 +246,7 @@ fn get_label(lenght: u32, instruction: &str, labels: &HashMap<String, usize>, cu
                     return Err(5)
                 };
             if (abs_diff) <= 2usize.pow(lenght) {
-                return Ok(abs_diff as u8);
+                return Ok((abs_diff-1) as u8);
             } else {
                 return Err(5)
             }
