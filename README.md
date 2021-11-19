@@ -2,6 +2,8 @@
 
 A library with logic for compiling [The Socially Acceptable Language]().
 
+Emulator by Felix Murnion can be found at [repo](https://github.com/INDAPlus21/murnion-task-9/tree/master/src).
+
 ### TO DO:
 
 * Make the compiler remove non-code lines during from vec
