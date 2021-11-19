@@ -41,9 +41,11 @@ pub fn compile(arguments: Vec<String>) {
                 if line_has_code(&lines[current_index]) {
                     match compiler::run(lines[current_index].as_str(), &labels, &current_index) {
                         Ok(_instruction) => {
-                            println!("{:?}:{:?}", current_index+1, _instruction);
+                            println!("{:?}:{:08b}", current_index+1, _instruction);
                             executable.push(_instruction)},
-                        Err(_) => (),
+                        Err(_) => {
+                            println!("{:?}:-", current_index+1);
+                        },
                     }
                 }
                 current_index += 1;

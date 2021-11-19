@@ -171,10 +171,10 @@ pub fn find_labels(expression: &str) -> Option<usize> {
 
 fn get_prefix(instruction: &str) -> Result<(Prefix, bool), usize> {
     match instruction {
-        "I'M ORDERING YOU" => Ok((ORDER, false)),
+        "I'M ORDERING YOU" | "I’M ORDERING YOU" => Ok((ORDER, false)),
         "NOW" => Ok((NOW, false)),
         "PLEASE" => Ok((PLEASE, true)),
-        "I'M BEGGING YOU" => Ok((BEGGING, true)),
+        "I'M BEGGING YOU" | "I’M BEGGING YOU" => Ok((BEGGING, true)),
         _ => Err(1),
     }
 }
