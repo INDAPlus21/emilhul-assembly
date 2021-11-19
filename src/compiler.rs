@@ -48,8 +48,8 @@ const SECOND: Registry = [true];
 // Argument uses one bit
 type Argument = [bool; 2];
 const ONE: Argument = [false, false];
-const TWO: Argument = [false, true];
-const THIRD: Argument = [true, false];
+const TWO: Argument = [true, false];
+const THIRD: Argument = [false, true];
 const FOURTH: Argument = [true, true];
 
 // There are four operation types
@@ -59,6 +59,7 @@ enum OperationType {
     Branch,
     Jump,
 }
+
 /// Compile one SAL expression to an 8-bit instruction.
 /// 
 /// ### Operation types
@@ -232,8 +233,8 @@ fn get_two_arguments(first_argument: &str, second_argument: &str) -> Result<Argu
     };
     match (first, second) {
         (false, false) => Ok(ONE),
-        (false, true) => Ok(TWO),
-        (true, false) => Ok(THIRD),
+        (true, false) => Ok(TWO),
+        (false, true) => Ok(THIRD),
         (true, true) => Ok(FOURTH),
     }
 }
