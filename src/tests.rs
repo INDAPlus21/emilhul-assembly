@@ -30,7 +30,7 @@ mod tests {
 
     #[test]
     fn compiler_test() {
-        let args: Vec<String> = vec!("./test.sal".to_string());
+        let args: Vec<String> = vec!("./input.sal".to_string());
         compile(args)
     }
 }

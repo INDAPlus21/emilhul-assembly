@@ -4,16 +4,32 @@
  */
 use std::collections::HashMap;
 
+// Lengths of instructions and labels in bits
 const INSTRUCTION_LENGTH: usize = 8;
 const BRANCH_LENGTH: u32 = 2;
 const JUMP_LENGTH: u32 = 3;
 
+/// ## Prefix
+/// The first two bits are represented by the Prefix. 
+/// 
+/// ### Types
+/// There are four types:
+/// * "I'M BEGGING YOU"
+/// * "PLEASE"
+/// * "NOW"
+/// * "I ORDER YOU"
+/// 
+/// ### Groups
+/// Prefixes can further be divided into two groups:
+/// * Polite - "PLEASE" and "I'M BEGGING YOU"
+/// * Demanding - "NOW" and "I ORDER YOU"
 type Prefix = [bool; 2];
 const ORDER: Prefix = [false, false];
 const NOW: Prefix = [false, true];
 const PLEASE: Prefix = [true, false];
 const BEGGING: Prefix = [true, true];
 
+/// Operation which uses three bits
 type Operation = [bool; 3];
 const INCREMENT: Operation = [false, false, false];
 const TO: Operation = [false, false, true];
@@ -24,28 +40,41 @@ const BRANCH_IF_ZERO: Operation = [true, false, true];
 const JUMP_IF_EQUAL: Operation = [true, true, false];
 const JUMP: Operation = [true, true, true];
 
+// Registry uses one bit
 type Registry = [bool; 1];
 const FIRST: Registry = [false];
 const SECOND: Registry = [true];
 
+// Argument uses one bit
 type Argument = [bool; 2];
 const ONE: Argument = [false, false];
 const TWO: Argument = [false, true];
 const THIRD: Argument = [true, false];
 const FOURTH: Argument = [true, true];
 
+// There are four operation types
 enum OperationType {
-    TwoArguments,
     OneArgument,
+    TwoArguments,
     Branch,
     Jump,
 }
-
+/// Compile one SAL expression to an 8-bit instruction.
+/// 
+/// ### Operation types
+/// | **Type** | **Encoding** |
+/// |:---------|:-------------|
+/// | One Argument | `Prefix<7:6>, Operation<5:3>, Registry<2>, Argument<1:0>` |
+/// | Two Arguments | `Prefix<7:6>, Operation<5:3>, Registry<2>, First Argument<1>, Second Argument<0>` |
+/// | Branch | `Prefix<7:6>, Operation<5:3>, Registry<2>, Label<1:0>` |
+/// | Jump | `Prefix<7:6>, Opperation<5:3>, Label<2:0>` |
 pub fn run(expression: &str, labels: &HashMap<String, usize>, current_index: &usize) -> Result<u8, usize> {
+    // Split expression at , and .
     let components: Vec<&str> = expression.split(split_function).collect();
     let mut instruction: Vec<bool> = Vec::with_capacity(INSTRUCTION_LENGTH);
 
-   let polite: bool = match get_prefix(components[0]) {
+    // Check prefix and save wheter it's polite.
+    let polite: bool = match get_prefix(components[0]) {
         Ok((_prefix, _polite)) => {
             instruction.extend_from_slice(&_prefix);
             _polite

@@ -53,6 +53,7 @@ pub fn compile(arguments: Vec<String>) {
             match fs::OpenOptions::new()
                 .write(true)
                 .create(true)
+                .truncate(true)
                 .open(OUT_FILE_PATH)
             {
                 Ok(mut _file) => match _file.write_all(&executable) {
